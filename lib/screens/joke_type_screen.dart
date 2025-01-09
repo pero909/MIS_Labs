@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../services/api_service.dart';
+import 'FavoritesScreen.dart';
 
-
+List<Map<String, dynamic>> favoriteJokes = [];
 class JokeTypeScreen extends StatefulWidget {
   final String type;
 
@@ -26,12 +27,17 @@ class _JokeTypeScreenState extends State<JokeTypeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Jokes of type: ${widget.type}'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context); // This will pop the screen and go back
-          },
-        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FavoritesScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: jokes,
@@ -54,23 +60,27 @@ class _JokeTypeScreenState extends State<JokeTypeScreen> {
                     borderRadius: BorderRadius.circular(15), // Rounded corners
                   ),
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          joke['setup'],
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          joke['punchline'],
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
+                    child: ListTile(
+                    title: Text(joke['setup']),
+                    subtitle: Text(joke['punchline']),
+                    trailing: IconButton(
+                    icon: Icon(
+                    favoriteJokes.contains(joke)
+                    ? Icons.favorite
+                        : Icons.favorite_border,
+                    color: favoriteJokes.contains(joke) ? Colors.red : null,
                     ),
-                  ),
+                    onPressed: () {
+                    setState(() {
+                    if (favoriteJokes.contains(joke)) {
+                    favoriteJokes.remove(joke); // Remove from favorites
+                    } else {
+                    favoriteJokes.add(joke); // Add to favorites
+                    }
+                    });
+                    },
+                   ),
+                  )
                 );
               },
             );

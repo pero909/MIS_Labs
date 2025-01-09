@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../widgets/joke_card.dart';
 import 'joke_type_screen.dart';
+import 'FavoritesScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -23,17 +24,31 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Joke Types (191553)'),
-
         actions: [
+          // Heart icon for navigating to the Favorites page
           IconButton(
             icon: Icon(
-                Icons.casino,
-                size: 40,
+              Icons.favorite,
+              color: Colors.red, // Make the heart red
+              size: 30,
+            ),
+            onPressed: () {
+              // Navigate to the Favorites Page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FavoritesScreen()),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.casino,
+              size: 30,
             ),
             onPressed: () {
               Navigator.pushNamed(context, '/randomJoke');
             },
-          )
+          ),
         ],
       ),
       body: FutureBuilder<List<String>>(
